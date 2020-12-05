@@ -1,0 +1,12 @@
+dataset/Hayao/*
+dataset/Paprika/*
+dataset/Shinkai/*
+dataset/SummerWar/*
+dataset/test/*
+dataset/train_photo/*
+dataset/val/*
+
+vgg19_weight/*
+
+__pycache__
+*/__pycache__
