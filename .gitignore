@@ -5,8 +5,10 @@ dataset/SummerWar/*
 dataset/test/*
 dataset/train_photo/*
 dataset/val/*
+dataset/Dataset.zip
 
 vgg19_weight/*
 
+logs
 __pycache__
 */__pycache__

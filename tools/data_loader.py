@@ -41,9 +41,9 @@ class ImageGenerator(object):
             # color image1
             image1 = cv2.imread(img_path1.decode()).astype(np.float32)
             image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2RGB)
-            image1[:,:,0] += self.data_mean[2]
-            image1[:,:,1] += self.data_mean[1]
-            image1[:,:,2] += self.data_mean[0]
+            image1[:,:,0] += float( self.data_mean[2] )
+            image1[:,:,1] += float( self.data_mean[1] )
+            image1[:,:,2] += float( self.data_mean[0] )
 
             # gray image2
             image2 = cv2.imread(img_path1.decode(),cv2.IMREAD_GRAYSCALE).astype(np.float32)

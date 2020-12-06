@@ -290,9 +290,9 @@ def total_variation_loss(inputs):
     """
     dh = inputs[:, :-1, ...] - inputs[:, 1:, ...]
     dw = inputs[:, :, :-1, ...] - inputs[:, :, 1:, ...]
-    size_dh = tf.size(dh, out_type=tf.float32)
-    size_dw = tf.size(dw, out_type=tf.float32)
-    return tf.nn.l2_loss(dh) / size_dh + tf.nn.l2_loss(dw) / size_dw
+    size_dh = tf.size(dh, out_type=tf.int32)
+    size_dw = tf.size(dw, out_type=tf.int32)
+    return tf.nn.l2_loss(dh) / tf.cast(size_dh, tf.float32) + tf.nn.l2_loss(dw) / tf.cast(size_dw, tf.float32)
 
 def rgb2yuv(rgb):
     """
