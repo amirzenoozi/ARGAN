@@ -7,6 +7,7 @@ from net import generator,generator_lite
 from net.discriminator import D_net
 from tools.data_loader import ImageGenerator
 from tools.vgg19 import Vgg19
+from tools.early_stopping import EarlyStopping
 
 class AnimeGANv2(object) :
     def __init__(self, sess, args):
@@ -65,6 +66,7 @@ class AnimeGANv2(object) :
         self.anime_smooth_generator = ImageGenerator('./dataset/{}'.format(self.dataset_name + '/smooth'), self.img_size, self.batch_size, self.data_mean)
         self.dataset_num = max(self.real_image_generator.num_images, self.anime_image_generator.num_images)
 
+        self.early_stopping = EarlyStopping(patience=0 , min_delta=5e-2)
         self.vgg = Vgg19()
 
         print()
@@ -85,7 +87,6 @@ class AnimeGANv2(object) :
     ##################################################################################
     # Generator
     ##################################################################################
-
     def generator(self, x_init, reuse=False, scope="generator"):
         if self.light:
             with tf.variable_scope(scope, reuse=reuse):
@@ -101,7 +102,6 @@ class AnimeGANv2(object) :
     ##################################################################################
     # Discriminator
     ##################################################################################
-
     def discriminator(self, x_init, reuse=False, scope="discriminator"):
 
             D = D_net(x_init, self.ch, self.n_dis, self.sn, reuse=reuse, scope=scope)
@@ -227,8 +227,11 @@ class AnimeGANv2(object) :
         j = self.training_rate
         for epoch in range(start_epoch, self.epoch):
 
+            # EarlyStopping Check
+            # if self.early_stopping.stop_training:
+            #     break
 
-            for idx in range(int(self.dataset_num / self.batch_size)):
+            for idx in range( int( self.dataset_num / self.batch_size ) ):
 
                 anime, anime_smooth, real = self.sess.run([anime_img_op, anime_smooth_op, real_img_op])
 
@@ -285,6 +288,11 @@ class AnimeGANv2(object) :
                     if j < 1:
                         j = self.training_rate
 
+            # Pass Model Params To EarlyStopping Class
+            # self.early_stopping.on_epoch_end(epoch=epoch, current_value=round(np.mean(mean_loss, axis=0)[0], 2))
+            # if self.early_stopping.stop_training :
+            #     print( f"Early Stopping Triggered in Epoch: {epoch}")
+            #     self.save(self.checkpoint_dir, epoch)
 
             if (epoch + 1) >= self.init_epoch and np.mod(epoch + 1, self.save_freq) == 0:
                 self.save(self.checkpoint_dir, epoch)
