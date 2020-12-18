@@ -3,6 +3,8 @@ from tools.utils import *
 from glob import glob
 import time
 import numpy as np
+import matplotlib.pyplot as plt
+import cv2
 from net import generator,generator_lite
 from net.discriminator import D_net
 from tools.data_loader import ImageGenerator
@@ -246,9 +248,7 @@ class AnimeGANv2(object) :
                     # Init G
                     start_time = time.time()
 
-                    real_images, generator_images, _, v_loss, summary_str = self.sess.run([self.real, self.generated,
-                                                                             self.init_optim,
-                                                                             self.init_loss, self.V_loss_merge], feed_dict = train_feed_dict)
+                    real_images, generator_images, _, v_loss, summary_str = self.sess.run([self.real, self.generated, self.init_optim, self.init_loss, self.V_loss_merge], feed_dict = train_feed_dict)
                     self.writer.add_summary(summary_str, epoch)
                     init_mean_loss.append(v_loss)
 
@@ -260,13 +260,11 @@ class AnimeGANv2(object) :
 
                     if j == self.training_rate:
                         # Update D
-                        _, d_loss, summary_str = self.sess.run([self.D_optim, self.Discriminator_loss, self.D_loss_merge],
-                                                            feed_dict=train_feed_dict)
+                        _, d_loss, summary_str = self.sess.run([self.D_optim, self.Discriminator_loss, self.D_loss_merge], feed_dict=train_feed_dict)
                         self.writer.add_summary(summary_str, epoch)
 
                     # Update G
-                    real_images, generator_images, _, g_loss, summary_str = self.sess.run([self.real, self.generated,self.G_optim,
-                                                                                              self.Generator_loss, self.G_loss_merge], feed_dict = train_feed_dict)
+                    real_images, generator_images, _, g_loss, summary_str = self.sess.run([self.real, self.generated,self.G_optim, self.Generator_loss, self.G_loss_merge], feed_dict = train_feed_dict)
                     self.writer.add_summary(summary_str, epoch)
 
                     mean_loss.append([d_loss, g_loss])
@@ -311,7 +309,6 @@ class AnimeGANv2(object) :
                     # adjust_brightness_from_photo_to_fake
                     save_images(test_generated, save_path+'{:03d}_b.png'.format(i), sample_file) 
 
-
     @property
     def model_dir(self):
         if self.light:
@@ -326,7 +323,6 @@ class AnimeGANv2(object) :
                                                           int(self.g_adv_weight), int(self.d_adv_weight),
                                                           int(self.con_weight), int(self.sty_weight),
                                                           int(self.color_weight), int(self.tv_weight))
-
 
     def save(self, checkpoint_dir, step):
         checkpoint_dir = os.path.join(checkpoint_dir, self.model_dir)
@@ -390,3 +386,24 @@ class AnimeGANv2(object) :
             index.write("</tr>")
 
         index.close()
+
+    def save_img(self, imgs, label, epoch):
+        for i in range( self.batch_size ):
+            fig = plt.figure()
+            for j, img in enumerate(imgs):
+                im = np.uint8(np.clip((img[i] + 1) * 127.5, 0, 255.0))
+                im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+                fig.add_subplot(1, len(imgs), j + 1)
+                plt.imshow(im)
+                plt.tick_params(labelbottom='off')
+                plt.tick_params(labelleft='off')
+                plt.gca().get_xaxis().set_ticks_position('none')
+                plt.gca().get_yaxis().set_ticks_position('none')
+                plt.xlabel(label[j])
+            seq_ = "{0:09d}".format(i + 1)
+            epoch_ = "{0:09d}".format(epoch)
+            path = os.path.join('result', seq_, '{}.png'.format(epoch_))
+            if not os.path.exists(os.path.join('result', seq_)):
+                os.mkdir(os.path.join('result', seq_))
+            plt.savefig(path)
+            plt.close()
