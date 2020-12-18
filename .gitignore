@@ -8,6 +8,7 @@ dataset/val/*
 dataset/Dataset.zip
 
 vgg19_weight/*
+resnet50_weight/*
 
 logs
 __pycache__
