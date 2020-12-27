@@ -9,6 +9,7 @@ from net import generator,generator_lite
 from net.discriminator import D_net
 from tools.data_loader import ImageGenerator
 from tools.vgg19 import Vgg19
+from tools.resnet50 import ResNet
 from tools.early_stopping import EarlyStopping
 
 class AnimeGANv2(object) :
@@ -68,8 +69,9 @@ class AnimeGANv2(object) :
         self.anime_smooth_generator = ImageGenerator('./dataset/{}'.format(self.dataset_name + '/smooth'), self.img_size, self.batch_size, self.data_mean)
         self.dataset_num = max(self.real_image_generator.num_images, self.anime_image_generator.num_images)
 
-        self.early_stopping = EarlyStopping(patience=0 , min_delta=5e-2)
-        self.vgg = Vgg19()
+        # self.early_stopping = EarlyStopping(patience=0 , min_delta=5e-2)
+        # self.vgg = Vgg19()
+        self.vgg = ResNet()
 
         print()
         print("##### Information #####")
