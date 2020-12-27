@@ -42,16 +42,17 @@ class ResNet:
         rgb_scaled = ((rgb + 1) / 2) * 255.0 # [-1, 1] ~ [0, 255]
 
         red, green, blue = tf.split(axis=3, num_or_size_splits=3, value=rgb_scaled)
-        assert red.get_shape().as_list()[1:] == [224, 224, 1]
-        assert green.get_shape().as_list()[1:] == [224, 224, 1]
-        assert blue.get_shape().as_list()[1:] == [224, 224, 1]
+        # print( red, green, blue)
+        # assert red.get_shape().as_list()[1:] == [224, 224, 1]
+        # assert green.get_shape().as_list()[1:] == [224, 224, 1]
+        # assert blue.get_shape().as_list()[1:] == [224, 224, 1]
         
         bgr = tf.concat(axis=3, values=[blue - BGR_MEAN[0],
                                         green - BGR_MEAN[1],
                                         red - BGR_MEAN[2]])
 
-        print(bgr.get_shape().as_list())
-        assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
+        # print(bgr.get_shape().as_list())
+        # assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
         self.conv1 = self.conv_layer(bgr, 7, 3, 64, 2, "conv1")
         self.conv_norm_1 = self.batch_norm(self.conv1)
@@ -74,7 +75,7 @@ class ResNet:
         self.block3_5 = self.res_block_3_layers(self.block3_4, [256, 256, 1024], "block3_5")
 
         # Just For Calculate Loss
-        self.conv3_6_no_activation = self.res_block_3_layers_no_activation(self.block3_4, [256, 256, 1024], "block3_5")
+        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block3_4, [256, 256, 1024], "block3_5")
 
         self.block3_6 = self.res_block_3_layers(self.block3_5, [256, 256, 1024], "block3_6")
 
@@ -160,8 +161,8 @@ class ResNet:
         stride : stride
         name : block_layer name
         """
-        print(name + ":")
-        print(bottom.get_shape().as_list())
+        # print(name + ":")
+        # print(bottom.get_shape().as_list())
         return tf.nn.avg_pool(bottom, ksize=[1, kernal_size, kernal_size, 1], strides=[1, stride, stride, 1], padding='VALID', name=name)
 
     def max_pool(self, bottom, kernal_size = 2, stride = 2, name = "max"):
@@ -171,8 +172,8 @@ class ResNet:
         stride : stride
         name : block_layer name
         """
-        print(name + ":")
-        print(bottom.get_shape().as_list())
+        # print(name + ":")
+        # print(bottom.get_shape().as_list())
         return tf.nn.max_pool(bottom, ksize=[1, kernal_size, kernal_size, 1], strides=[1, stride, stride, 1], padding='SAME', name=name)
 
     def conv_layer(self, bottom, kernal_size, in_channels, out_channels, stride, name):
@@ -184,8 +185,8 @@ class ResNet:
         stride : stride
         name : block_layer name
         """
-        print(name + ":")
-        print(bottom.get_shape().as_list())
+        # print(name + ":")
+        # print(bottom.get_shape().as_list())
         with tf.variable_scope(name):
             filt, conv_biases = self.get_conv_var(kernal_size, in_channels, out_channels, name)
 
@@ -199,17 +200,6 @@ class ResNet:
 
     def get_conv_filter(self, name):
             return tf.constant(self.data_dict[name][0], name="filter")
-            
-    def no_activation_conv_layer(self, bottom, name):
-        with tf.variable_scope(name):
-            filt = self.get_conv_filter(name)
-
-            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
-
-            conv_biases = self.get_bias(name)
-            x = tf.nn.bias_add(conv, conv_biases)
-
-            return x
 
     def fc_layer(self, bottom, in_size, out_size, name):
         """
@@ -217,8 +207,8 @@ class ResNet:
         in_size : number of input feature size
         out_size : number of output feature size
         """
-        print(name + ":")
-        print(bottom.get_shape().as_list())
+        # print(name + ":")
+        # print(bottom.get_shape().as_list())
         with tf.variable_scope(name):
             weights, biases = self.get_fc_var(in_size, out_size, name)
 
@@ -268,8 +258,8 @@ class ResNet:
         var_name: name + "_filter"/"_bias"
         """
         if((name, idx) in self.var_dict):
-            print("Reuse Parameters...")
-            print(self.var_dict[(name, idx)])
+            # print("Reuse Parameters...")
+            # print(self.var_dict[(name, idx)])
             return self.var_dict[(name, idx)]
 
         if self.data_dict is not None and name in self.data_dict:
