@@ -72,6 +72,10 @@ class ResNet:
         self.block3_3 = self.res_block_3_layers(self.block3_2, [256, 256, 1024], "block3_3")
         self.block3_4 = self.res_block_3_layers(self.block3_3, [256, 256, 1024], "block3_4")
         self.block3_5 = self.res_block_3_layers(self.block3_4, [256, 256, 1024], "block3_5")
+
+        # Just For Calculate Loss
+        self.conv3_6_no_activation = self.res_block_3_layers_no_activation(self.block3_4, [256, 256, 1024], "block3_5")
+
         self.block3_6 = self.res_block_3_layers(self.block3_5, [256, 256, 1024], "block3_6")
 
         self.block4_1 = self.res_block_3_layers(self.block3_6, [512, 512, 2048], "block4_1", True, 2)
@@ -89,6 +93,30 @@ class ResNet:
 
         print(("build model finished: %fs" % (time.time() - start_time)))
         # return self.pool2
+
+    def res_block_3_layers_no_activation(self, bottom, channel_list, name, change_dimension = False, block_stride = 1):
+        """
+        bottom: input values (X)
+        channel_list : number of channel in 3 layers
+        name: block name
+        """
+        if (change_dimension):
+            short_cut_conv = self.conv_layer(bottom, 1, bottom.get_shape().as_list()[-1], channel_list[2], block_stride, name + "_ShortcutConv")
+            block_conv_input = self.batch_norm(short_cut_conv)
+        else:
+            block_conv_input = bottom
+
+        block_conv_1 = self.conv_layer(bottom, 1, bottom.get_shape().as_list()[-1], channel_list[0], block_stride, name + "_lovalConv1")
+        block_norm_1 = self.batch_norm(block_conv_1)
+        block_relu_1 = tf.nn.relu(block_norm_1)
+
+        block_conv_2 = self.conv_layer(block_relu_1, 3, channel_list[0], channel_list[1], 1, name + "_lovalConv2")
+        block_norm_2 = self.batch_norm(block_conv_2)
+        block_relu_2 = tf.nn.relu(block_norm_2)
+
+        block_conv_3 = self.conv_layer(block_relu_2, 1, channel_list[1], channel_list[2], 1, name + "_lovalConv3")
+
+        return block_conv_3
 
     def res_block_3_layers(self, bottom, channel_list, name, change_dimension = False, block_stride = 1):
         """
