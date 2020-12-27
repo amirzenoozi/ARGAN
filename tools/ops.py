@@ -247,10 +247,10 @@ def gram(x):
 def con_loss(vgg, real, fake):
 
     vgg.build(real)
-    real_feature_map = vgg.conv4_4_no_activation
+    real_feature_map = vgg.no_activation_layer
 
     vgg.build(fake)
-    fake_feature_map = vgg.conv4_4_no_activation
+    fake_feature_map = vgg.no_activation_layer
 
     loss = L1_loss(real_feature_map, fake_feature_map)
 
@@ -263,13 +263,13 @@ def style_loss(style, fake):
 def con_sty_loss(vgg, real, anime, fake):
 
     vgg.build(real)
-    real_feature_map = vgg.conv4_4_no_activation
+    real_feature_map = vgg.no_activation_layer
 
     vgg.build(fake)
-    fake_feature_map = vgg.conv4_4_no_activation
+    fake_feature_map = vgg.no_activation_layer
 
     vgg.build(anime[:fake_feature_map.shape[0]])
-    anime_feature_map = vgg.conv4_4_no_activation
+    anime_feature_map = vgg.no_activation_layer
 
     c_loss = L1_loss(real_feature_map, fake_feature_map)
     s_loss = style_loss(anime_feature_map, fake_feature_map)

@@ -52,7 +52,7 @@ class Vgg19:
         self.conv4_2 = self.conv_layer(self.conv4_1, "conv4_2")
         self.conv4_3 = self.conv_layer(self.conv4_2, "conv4_3")
 
-        self.conv4_4_no_activation = self.no_activation_conv_layer(self.conv4_3, "conv4_4")
+        self.no_activation_layer = self.no_activation_conv_layer(self.conv4_3, "conv4_4")
 
         self.conv4_4 = self.conv_layer(self.conv4_3, "conv4_4")
         self.pool4 = self.max_pool(self.conv4_4, 'pool4')
