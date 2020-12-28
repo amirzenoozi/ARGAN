@@ -7,6 +7,8 @@ dataset/train_photo/*
 dataset/val/*
 dataset/Dataset.zip
 
+samples
+
 vgg19_weight/*
 resnet50_weight/*
 
