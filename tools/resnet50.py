@@ -61,6 +61,10 @@ class ResNet:
         self.pool1 = self.max_pool(self.conv1_relu, 3, 2, "pool1")
         self.block1_1 = self.res_block_3_layers(self.pool1, [64, 64, 256], "block1_1", True)
         self.block1_2 = self.res_block_3_layers(self.block1_1, [64, 64, 256], "block1_2")
+
+        # Just For Calculate Loss
+        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block1_2, [64, 64, 256], "block1_3")
+
         self.block1_3 = self.res_block_3_layers(self.block1_2, [64, 64, 256], "block1_3")
 
         self.block2_1 = self.res_block_3_layers(self.block1_3, [128, 128, 512], "block2_1", True, 2)
@@ -77,10 +81,6 @@ class ResNet:
 
         self.block4_1 = self.res_block_3_layers(self.block3_6, [512, 512, 2048], "block4_1", True, 2)
         self.block4_2 = self.res_block_3_layers(self.block4_1, [512, 512, 2048], "block4_2")
-
-        # Just For Calculate Loss
-        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block4_2, [512, 512, 2048], "block4_3")
-
         self.block4_3 = self.res_block_3_layers(self.block4_2, [512, 512, 2048], "block4_3")
 
         self.pool2 = self.avg_pool(self.block4_3, 7, 1, "pool2")
