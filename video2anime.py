@@ -62,14 +62,14 @@ def cvt2anime_video(video, output, checkpoint_dir, output_format='MP4V', img_siz
     '''
     output_format: 4-letter code that specify codec to use for specific video type. e.g. for mp4 support use "H264", "MP4V", or "X264"
     '''
-    gpu_stat = bool(len(tf.config.experimental.list_physical_devices('GPU')))
-    if gpu_stat:
-        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-    gpu_options = tf.compat.v1.GPUOptions(allow_growth=gpu_stat)
+    # gpu_stat = bool(len(tf.config.experimental.list_physical_devices('GPU')))
+    # if gpu_stat:
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+    gpu_options = tf.GPUOptions(allow_growth=True)
 
-    test_real = tf.compat.v1.placeholder(tf.float32, [1, None, None, 3], name='test')
+    test_real = tf.placeholder(tf.float32, [1, None, None, 3], name='test')
 
-    with tf.compat.v1.variable_scope("generator", reuse=False):
+    with tf.variable_scope("generator", reuse=False):
         if 'lite' in checkpoint_dir:
             test_generated = generator_lite.G_net(test_real).fake
         else:
@@ -83,12 +83,12 @@ def cvt2anime_video(video, output, checkpoint_dir, output_format='MP4V', img_siz
     # codec = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
     codec = cv2.VideoWriter_fourcc(*output_format)
 
-    tfconfig = tf.compat.v1.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
-    with tf.compat.v1.Session(config=tfconfig) as sess:
+    tfconfig = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+    with tf.Session(config=tfconfig) as sess:
         # tf.global_variables_initializer().run()
         # load model
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)  # checkpoint file information
-        saver = tf.compat.v1.train.Saver()
+        saver = tf.train.Saver()
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)  # first line
             saver.restore(sess, os.path.join(checkpoint_dir, ckpt_name))

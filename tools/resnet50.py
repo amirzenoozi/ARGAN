@@ -6,7 +6,8 @@ import sys
 
 
 
-BGR_MEAN = [104.7546, 124.328, 167.1754]
+# BGR_MEAN = [104.7546, 124.328, 167.1754]
+BGR_MEAN = [103.939, 116.779, 123.68]
 
 class ResNet:
     def __init__(self, ResNet_npy_path="resnet50_weight/resnet50.npy", trainable=True, open_tensorboard=False):
