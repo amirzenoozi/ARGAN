@@ -46,14 +46,21 @@ def make_edge_smooth(dataset_name, img_size) :
             gauss_img[idx[0][i], idx[1][i], 2] = np.sum( np.multiply(pad_img[idx[0][i]:idx[0][i] + kernel_size, idx[1][i]:idx[1][i] + kernel_size, 2], gauss))
 
 
+         bilateral = cv2.bilateralFilter( bgr_img, 5, 25, 25 )
+
         # Increase Saturation of Edges
-        kernel_sharpening = np.array([[-1, -1, -1], [-1, 9,-1], [-1, -1, -1]])
-        sharpen = cv2.filter2D(gauss_img, -1, kernel_sharpening)
+        # kernel_sharpening = np.array([[-1, -1, -1], [-1, 9,-1], [-1, -1, -1]])
+        # sharpen = cv2.filter2D(bilateral, -1, kernel_sharpening)
 
         # Remove Noise From Sharpen Image
-        denoise = cv2.fastNlMeansDenoisingColored(sharpen, None, 10, 10, 7, 15)
+        # denoise = cv2.fastNlMeansDenoisingColored(sharpen, None, 10, 10, 7, 15)
 
-        cv2.imwrite(os.path.join(save_dir, file_name), denoise)
+        # cv2.imshow( 'sharpen', sharpen )
+        # cv2.imshow( 'bgr_img', bgr_img )
+        # cv2.waitKey(0)
+
+        # cv2.imwrite(os.path.join(save_dir, file_name), gauss_img)
+        cv2.imwrite(os.path.join(save_dir, file_name), bilateral)
 
 """main"""
 def main():
