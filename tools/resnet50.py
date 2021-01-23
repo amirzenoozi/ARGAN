@@ -7,6 +7,7 @@ import sys
 
 
 # BGR_MEAN = [104.7546, 124.328, 167.1754]
+# VGG Weight
 BGR_MEAN = [103.939, 116.779, 123.68]
 
 class ResNet:
@@ -117,7 +118,7 @@ class ResNet:
         block_relu_2 = tf.nn.relu(block_norm_2)
 
         block_conv_3 = self.conv_layer(block_relu_2, 1, channel_list[1], channel_list[2], 1, name + "_lovalConv3")
-
+        
         return block_conv_3
 
     def res_block_3_layers(self, bottom, channel_list, name, change_dimension = False, block_stride = 1):
