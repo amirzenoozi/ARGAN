@@ -15,7 +15,8 @@ class ResNet18:
         open_tensorboard: Is Open Tensorboard or not. 
         """
         if ResNet_npy_path is not None:
-            self.data_dict = np.load(ResNet_npy_path, encoding='latin1').item()
+            self.data_dict = np.load(ResNet_npy_path, encoding='latin1')
+            print( len(self.data_dict) )
             print("npz file loaded ------- ", ResNet_npy_path)
         else:
             self.data_dict = None
