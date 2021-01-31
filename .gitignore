@@ -9,9 +9,7 @@ dataset/Dataset.zip
 
 samples
 
-vgg19_weight/*
-resnet50_weight/*
-resnet18_weight/*
+*_weight/*
 
 logs
 __pycache__
