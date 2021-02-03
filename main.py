@@ -102,7 +102,7 @@ def main():
         show_all_variables()
 
         if args.phase == 'train' :
-            # gan.train()
+            gan.train()
             print(" [*] Training finished!")
 
         if args.phase == 'test' :
