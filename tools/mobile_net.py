@@ -1,3 +1,4 @@
+from tensorflow.keras.layers import Input
 import tensorflow.keras.applications as kerasApp
 import tensorflow as tf
 import time
@@ -25,8 +26,8 @@ class MobileNet:
         red, green, blue = tf.split(axis=3, num_or_size_splits=3, value=rgb_scaled)
         
         bgr = tf.concat(axis=3, values=[blue - BGR_MEAN[0], green - BGR_MEAN[1], red - BGR_MEAN[2]])
-        bgr = tf.image.resize_images(bgr, [224, 224])
-        model = kerasApp.MobileNet(input_shape=None, alpha=1.0, depth_multiplier=1, dropout=0.001, include_top=False, weights="imagenet", input_tensor=None, pooling=None, classes=1000)
+        # bgr = tf.image.resize_images(bgr, [224, 224])
+        model = kerasApp.MobileNet(input_shape=None, alpha=1.0, depth_multiplier=1, dropout=0.001, include_top=False, weights="imagenet", input_tensor=Input(shape=(256, 236, 3)), pooling=None, classes=1000)
         model.predict( bgr, steps=1 )
         self.no_activation_layer = model.get_layer('conv_dw_1_bn').output
 
