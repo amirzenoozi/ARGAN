@@ -11,6 +11,7 @@ from tools.data_loader import ImageGenerator
 from tools.vgg19 import Vgg19
 from tools.resnet50 import ResNet
 from tools.resnet18 import ResNet18
+from tools.mobile_net import MobileNet
 from tools.early_stopping import EarlyStopping
 
 class AnimeGANv2(object) :
@@ -73,7 +74,8 @@ class AnimeGANv2(object) :
         # self.early_stopping = EarlyStopping(patience=0 , min_delta=5e-2)
         # self.vgg = Vgg19()
         # self.vgg = ResNet()
-        self.vgg = ResNet18()
+        # self.vgg = ResNet18()
+        self.vgg = MobileNet()
 
         print()
         print("##### Information #####")
