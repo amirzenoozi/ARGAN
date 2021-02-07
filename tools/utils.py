@@ -3,6 +3,7 @@ from tensorflow.contrib import slim
 from tools.adjust_brightness import adjust_brightness_from_src_to_dst, read_img
 import os,cv2
 import numpy as np
+import pickle
 
 
 def load_test_data(image_path, size):
@@ -90,3 +91,11 @@ def str2bool(x):
     return x.lower() in ('true')
 
 
+def load_obj(name):
+    with open(name, 'rb') as f:
+        return pickle.load(f)
+
+
+def save_obj(obj, name):
+    with open(name, 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
