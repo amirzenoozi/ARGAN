@@ -62,10 +62,12 @@ def conv2d(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding='SAME', 
     :param is_training: (boolean) to diff. between training and testing (important for batch normalization and dropout)
     :return: The output tensor of the layer (N, H', W', C').
     """
-    with tf.variable_scope(name) as scope:
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE) as scope:
         conv_o_b = __conv2d_p(scope, x=x, w=w, num_filters=num_filters, kernel_size=kernel_size, stride=stride,
                               padding=padding,
-                              initializer=initializer, l2_strength=l2_strength, bias=bias)
+                              initializer=initializer,
+                              l2_strength=l2_strength,
+                              bias=bias)
 
         if batchnorm_enabled:
             conv_o_bn = tf.layers.batch_normalization(conv_o_b, training=is_training)
@@ -99,7 +101,7 @@ def conv2d(name, x, w=None, num_filters=16, kernel_size=(3, 3), padding='SAME', 
 
 def __depthwise_conv2d_p(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride=(1, 1),
                          initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, bias=0.0):
-    with tf.variable_scope(name):
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
         stride = [1, stride[0], stride[1], 1]
         kernel_shape = [kernel_size[0], kernel_size[1], x.shape[-1], 1]
 
@@ -122,7 +124,7 @@ def depthwise_conv2d(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride
                      initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, bias=0.0, activation=None,
                      batchnorm_enabled=False, is_training=True):
     """Implementation of depthwise 2D convolution wrapper"""
-    with tf.variable_scope(name) as scope:
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE) as scope:
         conv_o_b = __depthwise_conv2d_p(name=scope, x=x, w=w, kernel_size=kernel_size, padding=padding,
                                         stride=stride, initializer=initializer, l2_strength=l2_strength, bias=bias)
 
@@ -140,24 +142,23 @@ def depthwise_conv2d(name, x, w=None, kernel_size=(3, 3), padding='SAME', stride
     return conv_a
 
 
-def depthwise_separable_conv2d(name, x, w_depthwise=None, w_pointwise=None, width_multiplier=1.0, num_filters=16,
-                               kernel_size=(3, 3),
-                               padding='SAME', stride=(1, 1),
-                               initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, biases=(0.0, 0.0),
-                               activation=None, batchnorm_enabled=True,
-                               is_training=True):
+def depthwise_separable_conv2d(name, x, w_depthwise=None, w_pointwise=None, width_multiplier=1.0, num_filters=16, kernel_size=(3, 3), padding='SAME', stride=(1, 1), initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, biases=(0.0, 0.0), activation=None, batchnorm_enabled=True, is_training=True):
     """Implementation of depthwise separable 2D convolution operator as in MobileNet paper"""
     total_num_filters = int(round(num_filters * width_multiplier))
-    with tf.variable_scope(name) as scope:
-        conv_a = depthwise_conv2d('depthwise', x=x, w=w_depthwise, kernel_size=kernel_size, padding=padding,
-                                  stride=stride,
-                                  initializer=initializer, l2_strength=l2_strength, bias=biases[0],
-                                  activation=activation,
-                                  batchnorm_enabled=batchnorm_enabled, is_training=is_training)
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE) as scope:
+        conv_a = depthwise_conv2d('depthwise', x=x, w=w_depthwise, kernel_size=kernel_size, padding=padding, stride=stride, initializer=initializer, l2_strength=l2_strength, bias=biases[0], activation=activation, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
-        conv_o = conv2d('pointwise', x=conv_a, w=w_pointwise, num_filters=total_num_filters, kernel_size=(1, 1),
-                        initializer=initializer, l2_strength=l2_strength, bias=biases[1], activation=activation,
-                        batchnorm_enabled=batchnorm_enabled, is_training=is_training)
+        conv_o = conv2d('pointwise', x=conv_a, w=w_pointwise, num_filters=total_num_filters, kernel_size=(1, 1), initializer=initializer, l2_strength=l2_strength, bias=biases[1], activation=activation, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
+
+    return conv_a, conv_o
+
+def depthwise_separable_conv2d_no_activation(name, x, w_depthwise=None, w_pointwise=None, width_multiplier=1.0, num_filters=16, kernel_size=(3, 3), padding='SAME', stride=(1, 1), initializer=tf.contrib.layers.xavier_initializer(), l2_strength=0.0, biases=(0.0, 0.0), activation=None, batchnorm_enabled=True, is_training=True):
+    """Implementation of depthwise separable 2D convolution operator as in MobileNet paper"""
+    total_num_filters = int(round(num_filters * width_multiplier))
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE) as scope:
+        conv_a = depthwise_conv2d('depthwise', x=x, w=w_depthwise, kernel_size=kernel_size, padding=padding, stride=stride, initializer=initializer, l2_strength=l2_strength, bias=biases[0], activation=None, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
+
+        conv_o = conv2d('pointwise', x=conv_a, w=w_pointwise, num_filters=total_num_filters, kernel_size=(1, 1), initializer=initializer, l2_strength=l2_strength, bias=biases[1], activation=None, batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
     return conv_a, conv_o
 
@@ -178,7 +179,7 @@ def __dense_p(name, x, w=None, output_dim=128, initializer=tf.contrib.layers.xav
     :return out: The output of the layer. (N, H)
     """
     n_in = x.get_shape()[-1].value
-    with tf.variable_scope(name):
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE):
         if w == None:
             w = __variable_with_weight_decay([n_in, output_dim], initializer, l2_strength)
         __variable_summaries(w)
@@ -209,7 +210,7 @@ def dense(name, x, w=None, output_dim=128, initializer=tf.contrib.layers.xavier_
     :param is_training: (boolean) to diff. between training and testing (important for batch normalization and dropout)
     :return out: The output of the layer. (N, H)
     """
-    with tf.variable_scope(name) as scope:
+    with tf.variable_scope(name, reuse=tf.AUTO_REUSE) as scope:
         dense_o_b = __dense_p(name=scope, x=x, w=w, output_dim=output_dim, initializer=initializer,
                               l2_strength=l2_strength,
                               bias=bias)
