@@ -1,5 +1,5 @@
 from tools.utils import load_obj, save_obj
-from tools.mobile_net_layer import depthwise_separable_conv2d, conv2d, avg_pool_2d, dense, flatten, dropout
+from tools.mobile_net_layer import depthwise_separable_conv2d, conv2d, avg_pool_2d, dense, flatten, dropout, depthwise_separable_conv2d_no_activation
 import tensorflow as tf
 import os
 import numpy as np
@@ -49,6 +49,9 @@ class MobileNet:
         # self.__add_to_nodes([conv2_1_dw, conv2_1_pw])
 
         conv2_2_dw, conv2_2_pw = depthwise_separable_conv2d('conv_ds_3', conv2_1_pw, width_multiplier=1.0, num_filters=128, kernel_size=(3, 3), padding='SAME', stride=(2, 2), batchnorm_enabled=True, activation=tf.nn.relu6, is_training=False, l2_strength=4e-5, biases=(0.0, 0.0))
+
+        # Just For Calculate Loss
+        self.no_activation_layer, self.a = depthwise_separable_conv2d_no_activation('conv_ds_3', conv2_1_pw, width_multiplier=1.0, num_filters=128, kernel_size=(3, 3), padding='SAME', stride=(2, 2), batchnorm_enabled=True, activation=None, is_training=False, l2_strength=4e-5, biases=(0.0, 0.0))
         # self.__add_to_nodes([conv2_2_dw, conv2_2_pw])
         
         ############################################################################################
@@ -60,9 +63,6 @@ class MobileNet:
         
         ############################################################################################
         conv4_1_dw, conv4_1_pw = depthwise_separable_conv2d('conv_ds_6', conv3_2_pw, width_multiplier=1.0, num_filters=256, kernel_size=(3, 3), padding='SAME', stride=(1, 1), batchnorm_enabled=True, activation=tf.nn.relu6, is_training=False, l2_strength=4e-5, biases=(0.0, 0.0))
-        
-        # Just For Calculate Loss
-        self.no_activation_layer, self.a = depthwise_separable_conv2d('conv_ds_6', conv3_2_pw, width_multiplier=1.0, num_filters=256, kernel_size=(3, 3), padding='SAME', stride=(1, 1), batchnorm_enabled=True, activation=None, is_training=False, l2_strength=4e-5, biases=(0.0, 0.0))
         # self.__add_to_nodes([conv4_1_dw, conv4_1_pw])
 
         conv4_2_dw, conv4_2_pw = depthwise_separable_conv2d('conv_ds_7', conv4_1_pw, width_multiplier=1.0, num_filters=512, kernel_size=(3, 3), padding='SAME', stride=(2, 2), batchnorm_enabled=True, activation=tf.nn.relu6, is_training=False, l2_strength=4e-5, biases=(0.0, 0.0))
