@@ -6,6 +6,7 @@ dataset/test/*
 dataset/train_photo/*
 dataset/val/*
 dataset/Dataset.zip
+checkpoint/*
 
 samples
 
