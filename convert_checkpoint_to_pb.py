@@ -37,7 +37,6 @@ with tf.Session() as sess:
     saver.restore(sess,tf.train.latest_checkpoint('/media/amirzenoozi/500G/Amirhossein/University/AnimeGANv2/checkpoint/AnimeGANv2_Hayao_lsgan_300_300_1_2_10_1_(res18_block1_2)/'))
 
     # Freeze the graph
-    output_node_names = [n.name for n in tf.get_default_graph().as_graph_def().node]
     frozen_graph_def = tf.graph_util.convert_variables_to_constants(
         sess,
         sess.graph_def,
