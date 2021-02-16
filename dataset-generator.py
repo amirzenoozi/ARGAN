@@ -5,7 +5,6 @@ from PIL import Image
 import cv2
 import os
 import argparse
-import glob
 
 def parse_args():
     desc = "Frame Extraction"
@@ -38,41 +37,47 @@ def keep_aspect_ratio( pil_img, base_size ):
     return pil_img.resize((base_size,hsize), Image.ANTIALIAS)
 
 def resize( file_path ):
-    path = file_path.split('/')[0]
+    path = os.path.abspath( file_path.split('/')[0] )
     item = file_path.split('/')[1]
     
-    if os.path.isfile( f"{path}\\{item}" ):
-        im = Image.open( f"{path}\\{item}" )
+    if os.path.isfile( f"{path}/{item}" ):
+        im = Image.open( f"{path}/{item}" )
         resize_im = keep_aspect_ratio( im, 600 )
         im_new = crop_center( resize_im, 256, 256 )
-        f, e = os.path.splitext( f"{path}\\{item}")
+        f, e = os.path.splitext( f"{path}/{item}")
         im_new.save( f + '.jpg', 'JPEG', quality=90)
 
-def frame_extraction( video_file_name ):
+def frame_extraction( video_file_name, file_number, skip_frame ):
     cap = cv2.VideoCapture( video_file_name )
-    count = 0
-    file_number = 0
+    total_frames = int( cap.get(cv2.CAP_PROP_FRAME_COUNT) )
+    frame_rate = skip_frame
+    frame_count = 0
 
+    pbar = tqdm(total=total_frames)
     while( cap.isOpened() ):
         ret, frame = cap.read()
         
-        if ret:
+        if ret and frame_count <= total_frames:
             cv2.imwrite( f"frame/{file_number}.jpg", frame)
             resize( f"frame/{file_number}.jpg" )
             file_number += 1
-            count += 2100 # i.e. at 30 fps, this advances one second
-            cap.set(1, count)
+            frame_count += frame_rate # i.e. at 30 fps, this advances one second
+            pbar.update( frame_rate )
+            cap.set(1, frame_count) 
         else:
-            cap.release()
             break
-    
+
+    pbar.update( total_frames )
+    pbar.close()
     cap.release()
     cv2.destroyAllWindows()
-  
+    
+    return file_number
 
-def proccess_files( files_list ):
-    for file in files_list[0:1]:
-        frame_extraction( file )
+def proccess_files( files_list, args ):
+    file_number = 0
+    for file in files_list:
+        file_number = frame_extraction( file, file_number, args.skip_frame )
 
 """main"""
 def main():
@@ -82,4 +87,8 @@ def main():
         exit()
 
     target_directory_pathes = video_file_list( args.directory, args.file_format )
-    proccess_files( target_directory_pathes )
+    proccess_files( target_directory_pathes, args )
+
+
+if __name__ == '__main__':
+    main()
