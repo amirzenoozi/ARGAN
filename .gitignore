@@ -7,6 +7,7 @@ dataset/train_photo/*
 dataset/val/*
 dataset/Dataset.zip
 checkpoint/*
+converted_models/*
 
 samples
 
