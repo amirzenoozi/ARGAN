@@ -8,7 +8,7 @@ import sys
 VGG_MEAN = [103.939, 116.779, 123.68]
 
 
-class Vgg19:
+class Vgg16:
     def __init__(self, vgg19_npy_path='weight/vgg16.npy'):
 
         if vgg19_npy_path is not None:
