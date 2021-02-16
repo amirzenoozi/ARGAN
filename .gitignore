@@ -10,6 +10,7 @@ checkpoint/*
 
 samples
 
+weight/*
 *_weight/*
 
 logs
