@@ -8,7 +8,7 @@ import sys
 BGR_MEAN = [103.939, 116.779, 123.68]
 
 class ResNet18:
-    def __init__(self, ResNet_npy_path="resnet18_weight/resnet18.npz", trainable=True, open_tensorboard=False):
+    def __init__(self, ResNet_npy_path="weight/resnet18.npz", trainable=True, open_tensorboard=False):
         """
         Initialize function
         ResNet_npy_path: If path is not none, loading the model. Otherwise, initialize all parameters at random.

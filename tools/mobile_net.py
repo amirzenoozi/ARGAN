@@ -12,7 +12,7 @@ class MobileNet:
     MobileNet Class
     """
 
-    def __init__(self, mobile_net_weight_path="mobilenet_weight/mobilenet_v1.pkl"):
+    def __init__(self, mobile_net_weight_path="weight/mobilenet_v1.pkl"):
 
         # init parameters and input
         self.nodes = {}
