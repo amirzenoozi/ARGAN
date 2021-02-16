@@ -8,10 +8,12 @@ import cv2
 from net import generator,generator_lite
 from net.discriminator import D_net
 from tools.data_loader import ImageGenerator
+from tools.vgg16 import Vgg16
 from tools.vgg19 import Vgg19
-from tools.resnet50 import ResNet
+from tools.resnet50 import ResNet50
 from tools.resnet18 import ResNet18
-from tools.mobile_net import ResNet50
+from tools.mobile_net import MobileNet
+from tools.alexnet import AlexNet
 from tools.early_stopping import EarlyStopping
 
 class AnimeGANv2(object) :
@@ -76,6 +78,7 @@ class AnimeGANv2(object) :
         self.vgg = ResNet50()
         # self.vgg = ResNet18()
         # self.vgg = MobileNet()
+        # self.vgg = Alexnet()
 
         print()
         print("##### Information #####")
