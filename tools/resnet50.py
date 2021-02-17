@@ -16,7 +16,7 @@ class ResNet50:
         open_tensorboard: Is Open Tensorboard or not. 
         """
         if ResNet_npy_path is not None:
-            self.data_dict = np.load(ResNet_npy_path, encoding='latin1').item()
+            self.data_dict = np.load(ResNet_npy_path, encoding='latin1',allow_pickle=True).item()
             print("npy file loaded ------- ", ResNet_npy_path)
         else:
             self.data_dict = None
@@ -60,11 +60,12 @@ class ResNet50:
 
         self.pool1 = self.max_pool(self.conv1_relu, 3, 2, "pool1")
         self.block1_1 = self.res_block_3_layers(self.pool1, [64, 64, 256], "block1_1", True)
-        self.block1_2 = self.res_block_3_layers(self.block1_1, [64, 64, 256], "block1_2")
-        self.block1_3 = self.res_block_3_layers(self.block1_2, [64, 64, 256], "block1_3")
 
         # Just For Calculate Loss
-        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block1_3, [64, 64, 256], "block1_3")
+        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block1_1, [64, 64, 256], "block1_2")
+
+        self.block1_2 = self.res_block_3_layers(self.block1_1, [64, 64, 256], "block1_2")
+        self.block1_3 = self.res_block_3_layers(self.block1_2, [64, 64, 256], "block1_3")
 
         self.block2_1 = self.res_block_3_layers(self.block1_3, [128, 128, 512], "block2_1", True, 2)
         self.block2_2 = self.res_block_3_layers(self.block2_1, [128, 128, 512], "block2_2")
