@@ -1,10 +1,13 @@
 from numpy.lib.type_check import real
 from tools.frechet_kernel_Inception_distance import *
 from tools.inception_score import *
+from skimage.measure import compare_ssim
 from glob import glob
 import os
 import argparse
+import warnings
 import numpy as np
+import cv2
 
 def parse_args():
     desc = "Edge smoothed"
@@ -157,6 +160,33 @@ def peak_signalToNoise_ratio( args, max_value=255 ):
     print("===========================")
     print( "PSNR_Mean: ", np.mean( PSNR ) )
     
+def structural_similarity_index( args ):
+    """ If you compare 2 exact images, the value of SSIM should be obviously 1.0 """
+    SSIM_list = []
+
+    real_images = glob(os.path.join(f'{ args.directory }/real_target', '*.*'))
+    fake_images = glob(os.path.join(f'{ args.directory }/fake', '*.*'))
+
+    for i in range(len( fake_images )):
+        # 3. Load the two input images
+        imageA = cv2.imread( real_images[i] )
+        imageB = cv2.imread( fake_images[i] )
+
+        # 4. Convert the images to grayscale
+        grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
+        grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
+
+        # 5. Compute the Structural Similarity Index (SSIM) between the two
+        #    images, ensuring that the difference image is returned
+        (score, diff) = compare_ssim(grayA, grayB, full=True)
+        diff = (diff * 255).astype("uint8")
+
+        # 6. You can print only the score if you want
+        SSIM_list.append( score )
+
+    print("===========================")
+    print("SSIM: ", np.mean(score))
+
 """main"""
 def main():
     # parse arguments
@@ -168,6 +198,7 @@ def main():
     frechet_inception_distance( args )
     kernel_inception_distance( args )
     peak_signalToNoise_ratio( args )
+    structural_similarity_index( args )
 
 
 if __name__ == '__main__':
