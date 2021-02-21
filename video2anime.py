@@ -17,19 +17,17 @@ from net import generator,generator_lite
 from tools.utils import preprocessing, check_folder
 from tools.adjust_brightness import adjust_brightness_from_src_to_dst
 
+from PIL import Image, ImageFilter, ImageEnhance
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def parse_args():
     desc = "Tensorflow implementation of AnimeGANv2"
     parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('--video', type=str, default='video/input/'+ '2.mp4',
-                        help='video file or number for webcam')
-    parser.add_argument('--checkpoint_dir', type=str, default='../checkpoint/generator_Paprika_weight',
-                        help='Directory name to save the checkpoints')
-    parser.add_argument('--output', type=str, default='video/output/' + 'Paprika',
-                        help='output path')
-    parser.add_argument('--output_format', type=str, default='MP4V',
-                        help='codec used in VideoWriter when saving video to file')
+    parser.add_argument('--video', type=str, default='video/input/'+ '4.mp4', help='video file or number for webcam')
+    parser.add_argument('--checkpoint_dir', type=str, default='../checkpoint/generator_Paprika_weight', help='Directory name to save the checkpoints')
+    parser.add_argument('--output', type=str, default='video/output/' + 'Paprika', help='output path')
+    parser.add_argument('--output_format', type=str, default='MP4V', help='codec used in VideoWriter when saving video to file')
     """
     output_format: xxx.mp4('MP4V'), xxx.mkv('FMP4'), xxx.flv('FLV1'), xxx.avi('XIVD')
     ps. ffmpeg -i xxx.mkv -c:v libx264 -strict -2 xxxx.mp4, this command can convert mkv to mp4, which has small size.
@@ -52,6 +50,15 @@ def convert_image(img, img_size):
     img = np.expand_dims(img, axis=0)
     img = np.asarray(img)
     return img
+
+def frame_enhance( frame ):
+    color_coverted = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    im = Image.fromarray( color_coverted )
+    enh = ImageEnhance.Contrast(im)
+    enh = enh.enhance(1.8)
+    finale_img = cv2.cvtColor( np.asarray( enh ), cv2.COLOR_RGB2BGR)
+    
+    return finale_img
 
 def inverse_image(img):
     img = (img.squeeze()+1.) / 2 * 255
@@ -119,6 +126,8 @@ def cvt2anime_video(video, output, checkpoint_dir, output_format='MP4V', img_siz
             fake_img = sess.run(test_generated, feed_dict={test_real: img})
             fake_img = inverse_image(fake_img)
             fake_img = adjust_brightness_from_src_to_dst(fake_img, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            # It's Just Enhance Frames
+            fake_img = frame_enhance( fake_img )
             out.write(cv2.cvtColor(fake_img, cv2.COLOR_BGR2RGB))
             pbar.update(1)
 
