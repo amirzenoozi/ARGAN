@@ -75,8 +75,8 @@ class AnimeGANv2(object) :
 
         # self.early_stopping = EarlyStopping(patience=0 , min_delta=5e-2)
         # self.vgg = Vgg19()
-        self.vgg = ResNet50()
-        # self.vgg = ResNet18()
+        # self.vgg = ResNet50()
+        self.vgg = ResNet18()
         # self.vgg = MobileNet()
         # self.vgg = Alexnet()
 
