@@ -11,6 +11,7 @@ converted_models/*
 
 samples
 evaluation
+post_proccess
 
 weight/*
 *_weight/*
