@@ -14,7 +14,7 @@ import sys
 def parse_args():
     desc = "Tensorflow implementation of AnimeGANv2"
     parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('--directory', type=str, default='post-proccess/', help='Evaluation Folder Name')
+    parser.add_argument('--directory', type=str, default='post_proccess/', help='Evaluation Folder Name')
     parser.add_argument('--color_adj', type=int, default=8, help='Color Value adj. Perameter 8 < X < 20')
 
     return parser.parse_args()
@@ -120,6 +120,19 @@ def read_video_file( video_file_name, args, output_format='MP4V' ):
     vid.release()
     cv2.destroyAllWindows()
 
+def proccess_images( directory ):
+    files = glob(os.path.join(f'{ directory }', '*.*'))
+
+    for i in range(len( files )):
+        file_name = os.path.basename( files[i] ).split('.')[0]
+
+        image = cv2.imread( files[i] )
+        color_coverted = cv2.cvtColor( image, cv2.COLOR_BGR2RGB)
+        im = Image.fromarray( color_coverted )
+        enh = ImageEnhance.Contrast(im)
+        enh = enh.enhance(1.5)
+        finale_img = cv2.cvtColor( np.asarray( enh ), cv2.COLOR_RGB2BGR)
+        cv2.imwrite(f'{ directory }/{file_name}_enhance.png', finale_img)
 
 if __name__ == '__main__':
     # parse arguments
@@ -128,3 +141,4 @@ if __name__ == '__main__':
         exit()
 
     read_video_file( 'video/output/Paprika/4-res18_(glr_1e-5).mp4', args )
+    # proccess_images( args.directory )
