@@ -42,17 +42,10 @@ class ResNet50:
         rgb_scaled = ((rgb + 1) / 2) * 255.0 # [-1, 1] ~ [0, 255]
 
         red, green, blue = tf.split(axis=3, num_or_size_splits=3, value=rgb_scaled)
-        # print( red, green, blue)
-        # assert red.get_shape().as_list()[1:] == [224, 224, 1]
-        # assert green.get_shape().as_list()[1:] == [224, 224, 1]
-        # assert blue.get_shape().as_list()[1:] == [224, 224, 1]
         
         bgr = tf.concat(axis=3, values=[blue - BGR_MEAN[0],
                                         green - BGR_MEAN[1],
                                         red - BGR_MEAN[2]])
-
-        # print(bgr.get_shape().as_list())
-        # assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
         self.conv1 = self.conv_layer(bgr, 7, 3, 64, 2, "conv1")
         self.conv_norm_1 = self.batch_norm(self.conv1)
@@ -60,15 +53,15 @@ class ResNet50:
 
         self.pool1 = self.max_pool(self.conv1_relu, 3, 2, "pool1")
         self.block1_1 = self.res_block_3_layers(self.pool1, [64, 64, 256], "block1_1", True)
-
-        # Just For Calculate Loss
-        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block1_1, [64, 64, 256], "block1_2")
-
         self.block1_2 = self.res_block_3_layers(self.block1_1, [64, 64, 256], "block1_2")
         self.block1_3 = self.res_block_3_layers(self.block1_2, [64, 64, 256], "block1_3")
 
         self.block2_1 = self.res_block_3_layers(self.block1_3, [128, 128, 512], "block2_1", True, 2)
         self.block2_2 = self.res_block_3_layers(self.block2_1, [128, 128, 512], "block2_2")
+
+        # Just For Calculate Loss
+        self.no_activation_layer = self.res_block_3_layers_no_activation(self.block2_2, [128, 128, 512], "block2_3")
+
         self.block2_3 = self.res_block_3_layers(self.block2_2, [128, 128, 512], "block2_3")
         self.block2_4 = self.res_block_3_layers(self.block2_3, [128, 128, 512], "block2_4")
 
