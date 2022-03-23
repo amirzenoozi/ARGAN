@@ -42,17 +42,10 @@ class ResNet18:
         rgb_scaled = ((rgb + 1) / 2) * 255.0 # [-1, 1] ~ [0, 255]
 
         red, green, blue = tf.split(axis=3, num_or_size_splits=3, value=rgb_scaled)
-        # print( red, green, blue)
-        # assert red.get_shape().as_list()[1:] == [224, 224, 1]
-        # assert green.get_shape().as_list()[1:] == [224, 224, 1]
-        # assert blue.get_shape().as_list()[1:] == [224, 224, 1]
         
         bgr = tf.concat(axis=3, values=[blue - BGR_MEAN[0],
                                         green - BGR_MEAN[1],
                                         red - BGR_MEAN[2]])
-
-        # print(bgr.get_shape().as_list())
-        # assert bgr.get_shape().as_list()[1:] == [224, 224, 3]
 
         self.conv1 = self.conv_layer(bgr, 7, 3, 64, 2, "conv1")
         self.conv_norm_1 = self.batch_norm(self.conv1)
