@@ -4,7 +4,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 
 def parse_args():
-    desc = "AnimeGANv2 for pb"
+    desc = "ARGANv1 for pb"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--trained_checkpoint_prefix', type=str, default='checkpoint/' + 'generator_Hayao_weight/' + 'Hayao-64.ckpt',
                         help='Directory name to save the checkpoints')
@@ -42,7 +42,7 @@ if __name__ == '__main__':
         # custom settings of the input and output in the pb
         inputs = {'input': tf.saved_model.utils.build_tensor_info(x)}
         outputs = {'output': tf.saved_model.utils.build_tensor_info(y)}
-        signature = tf.saved_model.signature_def_utils.build_signature_def(inputs, outputs, 'AnimeGANv2')
+        signature = tf.saved_model.signature_def_utils.build_signature_def(inputs, outputs, 'ARGANv1')
 
         builder.add_meta_graph_and_variables(sess, [tf.saved_model.tag_constants.SERVING],{'custom_signature':signature})
         builder.save()

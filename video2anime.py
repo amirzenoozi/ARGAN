@@ -20,7 +20,7 @@ from tools.adjust_brightness import adjust_brightness_from_src_to_dst
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def parse_args():
-    desc = "Tensorflow implementation of AnimeGANv2"
+    desc = "Tensorflow implementation of ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--video', type=str, default='video/input/'+ '2.mp4',
                         help='video file or number for webcam')

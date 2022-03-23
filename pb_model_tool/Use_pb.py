@@ -7,7 +7,7 @@ import argparse
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def parse_args():
-    desc = "AnimeGANv2 for pb"
+    desc = "ARGANv1 for pb"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--pb_path', type=str, default='pb_model_Hayao-64',
                         help='Directory name to save the checkpoints')

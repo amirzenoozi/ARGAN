@@ -9,7 +9,7 @@ import os
 
 
 def parse_args():
-    desc = "AnimeGANv2"
+    desc = "ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('--pb_file', type=str, default='output_graph.pb', help='pb File Path')

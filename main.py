@@ -1,4 +1,4 @@
-from AnimeGANv2 import AnimeGANv2
+from ARGANv1 import ARGANv1
 import argparse
 from tools.utils import *
 import os
@@ -7,7 +7,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 """parsing and configuration"""
 
 def parse_args():
-    desc = "AnimeGANv2"
+    desc = "ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('--phase', type=str, default='train', help='train or test ?')
     parser.add_argument('--dataset', type=str, default='Hayao', help='dataset_name')
@@ -93,7 +93,7 @@ def main():
     # open session
     gpu_options = tf.GPUOptions(allow_growth=True)
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True,inter_op_parallelism_threads=8, intra_op_parallelism_threads=8,gpu_options=gpu_options)) as sess:
-        gan = AnimeGANv2(sess, args)
+        gan = ARGANv1(sess, args)
 
         # build graph
         gan.build_model()

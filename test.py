@@ -9,7 +9,7 @@ from net import generator,generator_lite
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def parse_args():
-    desc = "AnimeGANv2"
+    desc = "ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('--checkpoint_dir', type=str, default='checkpoint/'+'generator_Shinkai_weight',

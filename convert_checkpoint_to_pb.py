@@ -9,7 +9,7 @@ import os
 
 
 def parse_args():
-    desc = "AnimeGANv2"
+    desc = "ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('--meta_file', type=str, default='AnimeGANv2_Hayao_lsgan_300_300_1_2_10_1_(res18_block1_2)/AnimeGANv2.model-39.meta', help='meta File Path')
@@ -37,7 +37,7 @@ def main( arguments ):
             output_node_names)
 
         # Save the frozen graph
-        with open( f'/media/amirzenoozi/500G/Amirhossein/University/AnimeGANv2/converted_models/pb/{pb_file_name}.pb', 'wb') as f:
+        with open( f'/media/amirzenoozi/500G/Amirhossein/University/ARGANv1/converted_models/pb/{pb_file_name}.pb', 'wb') as f:
             f.write(frozen_graph_def.SerializeToString())
 
     print("Model Is Converted to PB File")

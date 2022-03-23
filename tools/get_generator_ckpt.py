@@ -6,7 +6,7 @@ from net import generator,generator_lite
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 def parse_args():
-    desc = "AnimeGANv2"
+    desc = "ARGANv1"
     parser = argparse.ArgumentParser(description=desc)
 
     parser.add_argument('--checkpoint_dir', type=str, default='../checkpoint/' + 'AnimeGANv2_Hayao_lsgan_300_300_1_2_10_1_lite',
