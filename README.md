@@ -37,8 +37,8 @@ photos/videos to anime
 ___ 
 
 ____  
-## Results  
-![](https://github.com/amirzenoozi/ARGANv1/blob/master/ARGANv1.png)
+## Results
+![](https://github.com/amirzenoozi/ARGAN/blob/master/ARGANv1.png)
 
 ## Requirements  
 You Can Use `requirements` file to install all packages that you need.
