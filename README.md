@@ -93,7 +93,7 @@ This repo is made freely available to academic and non-academic entities for non
 If you find our work useful in your research or publications, please consider citing:
 ```bash
 @INPROCEEDINGS{9738752,
-  author={Zenoozi, Amirhossein Douzandeh and Navi, Keivan and Majidi, Babak,
+  author={Zenoozi, Amirhossein Douzandeh and Navi, Keivan and Majidi, Babak},
   booktitle={2022 International Conference on Machine Vision and Image Processing (MVIP)}, 
   title={ARGAN: Fast Converging GAN for Animation Style Transfer}, 
   year={2022},
