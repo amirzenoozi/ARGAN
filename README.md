@@ -87,10 +87,10 @@ python video2anime.py  --video input.mp4  --checkpoint_dir  checkpoint/generator
     
 ____  
 ## License  
-This repo is made freely available to academic and non-academic entities for non-commercial purposes such as academic research, teaching, scientific publications. Permission is granted to use the ARGANv1 given that you agree to my license terms. Regarding the request for commercial use, please contact us via email to help you obtain the  authorization letter.  
+This repo is made freely available to academic and non-academic entities for non-commercial purposes such as academic research, teaching, and scientific publications. Permission is granted to use the ARGANv1 given that you agree to my license terms. Regarding the request for commercial use, please contact us via email to help you obtain the  authorization letter.  
 
 ## Citation
-If you find our work useful in your research or publications, please consider citing:
+If you find our work useful in your research or publications, please consider citing the main paper:
 ```bash
 @INPROCEEDINGS{9738752,
   author={Zenoozi, Amirhossein Douzandeh and Navi, Keivan and Majidi, Babak},
@@ -100,7 +100,20 @@ If you find our work useful in your research or publications, please consider ci
   volume={},
   number={},
   pages={1-5},
-  doi={10.1109/MVIP53647.2022.9738752}}
+  doi={10.1109/MVIP53647.2022.9738752}
+}
+```
+And This Repository:
+```bash
+@software{Douzandeh_Zenoozi_ARGAN_GitHub_Repository_2023,
+   author = {Douzandeh Zenoozi, Amirhossein},
+   doi = {10.5281/zenodo.8075534},
+   month = jun,
+   title = {{ARGAN GitHub Repository}},
+   url = {https://github.com/amirzenoozi/ARGAN},
+   version = {1.0.0},
+   year = {2023}
+}
 ```
 
 ## Author
